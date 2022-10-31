@@ -26,7 +26,7 @@ func (h *GetWeatherHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) 
 	enc := json.NewEncoder(w)
 
 	res, err := h.getWeatherData(h.Logger, params)
-	if err == nil {
+	if err != nil {
 		logger.Error("Failed to get weather data", zap.Error(err))
 		w.WriteHeader(http.StatusInternalServerError)
 		err = enc.Encode("Server Error")
@@ -45,7 +45,7 @@ func (h *GetWeatherHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) 
 	return
 }
 
-func (h *GetWeatherHandler) getWeatherData(logger *zap.Logger, p url.Values) (resp models.ConditionResponse, err error) {
+func (h *GetWeatherHandler) getWeatherData(logger *zap.Logger, p url.Values) (resp models.WeatherResponse, err error) {
 	logger.Info("Get weather data", zap.Any("params", p))
 
 	var (
@@ -72,23 +72,23 @@ func (h *GetWeatherHandler) getWeatherData(logger *zap.Logger, p url.Values) (re
 
 	err = json.Unmarshal(body, &openData)
 	if err != nil {
-		logger.Error("raw weather response", zap.Any("body", string(body)))
+		logger.Error("Raw weather response", zap.Any("body", string(body)))
 		return resp, fmt.Errorf("failed to unmarshal open weather data: %w", err)
 	}
 
 	if openData.Code != nil {
 		rawRes := string(body)
-		logger.Error("bad response from open api", zap.Any("body", rawRes))
+		logger.Error("Bad response from open api", zap.Any("body", rawRes))
 		return resp, fmt.Errorf("request failed: %s", rawRes)
 	}
 
-	logger.Info("weather data", zap.Any("raw", string(body)))
+	logger.Info("Weather data", zap.Any("raw", string(body)))
 
-	return h.getConditionResponse(openData), nil
+	return h.getWeatherResponse(openData), nil
 }
 
-func (h *GetWeatherHandler) getConditionResponse(data models.OpenWeatherOneCallResponse) models.ConditionResponse {
-	return models.ConditionResponse{
+func (h *GetWeatherHandler) getWeatherResponse(data models.OpenWeatherOneCallResponse) models.WeatherResponse {
+	return models.WeatherResponse{
 		Alerts:    data.Alerts,
 		Summary:   h.getSummaryDescription(*data.Current.Weather[0], len(data.Alerts)),
 		Temp:      data.Current.Temp,

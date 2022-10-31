@@ -1,6 +1,6 @@
 package models
 
-type ConditionResponse struct {
+type WeatherResponse struct {
 	Alerts    []*Alert `json:"alerts,omitempty"`
 	Summary   string   `json:"summary"`
 	Temp      *float64 `json:"temp"`

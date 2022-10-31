@@ -22,6 +22,4 @@ func main() {
 	srv := server.ServerConfig(api)
 
 	srv.Start()
-
-	logger.Info("Weather-app Backend Started.")
 }
