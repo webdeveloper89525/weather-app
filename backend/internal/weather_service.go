@@ -9,12 +9,12 @@ import (
 )
 
 type WeatherService struct {
-	GetCondition *handlers.GetWeatherHandler
+	GetWeather *handlers.GetWeatherHandler
 }
 
 func NewWeatherService(logger *zap.Logger, cfg *config.Config) WeatherService {
 	c := client.ClientConfig(cfg)
 	return WeatherService{
-		GetCondition: &handlers.GetWeatherHandler{Logger: logger, Client: c},
+		GetWeather: &handlers.GetWeatherHandler{Logger: logger, Client: c},
 	}
 }

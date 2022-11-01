@@ -28,7 +28,7 @@ func ClientConfig(cfg *config.Config) *OpenWeatherClient {
 }
 
 func (c *OpenWeatherClient) GetClientWeather(lat, lon string) (*http.Response, error) {
-	req, err := http.NewRequest(http.MethodGet, c.Config.Endpoint+"/onecall", nil)
+	req, err := http.NewRequest(http.MethodGet, c.Config.Endpoint+"/weather", nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed build request: %w", err)
 	}

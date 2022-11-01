@@ -6,5 +6,5 @@ import (
 
 func (s *Server) AttachRoutes(api internal.WeatherService) {
 	// define routes here
-	s.Handle("/api/v1/weather", api.GetCondition)
+	s.Handle("/api/v1/weather", api.GetWeather)
 }

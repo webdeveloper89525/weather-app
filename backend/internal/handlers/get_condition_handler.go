@@ -31,14 +31,14 @@ func (h *GetWeatherHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) 
 		w.WriteHeader(http.StatusInternalServerError)
 		err = enc.Encode("Server Error")
 		if err != nil {
-			logger.Error("failed to encode json response")
+			logger.Error("Failed to encode json response")
 		}
 		return
 	}
 
 	err = enc.Encode(res)
 	if err != nil {
-		logger.Error("failed to encode json response")
+		logger.Error("Failed to encode json response")
 	}
 	logger.Info("Success", zap.Any("Response", res))
 
