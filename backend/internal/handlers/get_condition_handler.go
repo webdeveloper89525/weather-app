@@ -76,7 +76,7 @@ func (h *GetWeatherHandler) getWeatherData(logger *zap.Logger, p url.Values) (re
 		return resp, fmt.Errorf("failed to unmarshal open weather data: %w", err)
 	}
 
-	if openData.Code != nil {
+	if openData.Code != 200 {
 		rawRes := string(body)
 		logger.Error("Bad response from open api", zap.Any("body", rawRes))
 		return resp, fmt.Errorf("request failed: %s", rawRes)
@@ -89,16 +89,15 @@ func (h *GetWeatherHandler) getWeatherData(logger *zap.Logger, p url.Values) (re
 
 func (h *GetWeatherHandler) getWeatherResponse(data models.OpenWeatherOneCallResponse) models.WeatherResponse {
 	return models.WeatherResponse{
-		Alerts:    data.Alerts,
-		Summary:   h.getSummaryDescription(*data.Current.Weather[0], len(data.Alerts)),
+		Summary:   h.getSummaryDescription(*data.Weather[0]),
 		Temp:      data.Current.Temp,
 		FeelsTemp: data.Current.FeelsLike,
 		FeelsLike: h.getTempDescription(*data.Current.FeelsLike),
 	}
 }
 
-func (h *GetWeatherHandler) getSummaryDescription(weather models.WeatherItem, alertCount int) string {
-	return fmt.Sprintf("Current weather: %s (%s) and %d alert(s) in the area.", weather.Main, weather.Description, alertCount)
+func (h *GetWeatherHandler) getSummaryDescription(weather models.WeatherItem) string {
+	return fmt.Sprintf("Current weather: %s (%s) in the area.", weather.Main, weather.Description)
 }
 
 func (h *GetWeatherHandler) getTempDescription(feelsTemp float64) string {

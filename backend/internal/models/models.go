@@ -9,18 +9,21 @@ type WeatherResponse struct {
 }
 
 type OpenWeatherOneCallResponse struct {
-	Code     *int           `json:"cod"` // present on error
+	Code     int            `json:"cod"` // present on error
 	Lat      float64        `json:"lat"`
 	Lon      float64        `json:"lon"`
 	Timezone float64        `json:"timezone"`
-	Current  CurrentWeather `json:"current"`
-	Alerts   []*Alert       `json:"alerts"`
+	Current  CurrentWeather `json:"main"`
+	Weather  []*WeatherItem
 }
 
 type CurrentWeather struct {
 	Temp      *float64 `json:"temp"`
 	FeelsLike *float64 `json:"feels_like"`
-	Weather   []*WeatherItem
+	TempMin   *float64 `json:"temp_min"`
+	TempMax   *float64 `json:"temp_max"`
+	Pressure  int      `json:"pressure"`
+	Humidity  int      `json:"humidity"`
 }
 
 type WeatherItem struct {
