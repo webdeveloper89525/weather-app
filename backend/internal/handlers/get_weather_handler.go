@@ -92,6 +92,8 @@ func (h *GetWeatherHandler) getWeatherResponse(data models.OpenWeatherOneCallRes
 		Summary:   h.getSummaryDescription(*data.Weather[0]),
 		Temp:      data.Current.Temp,
 		FeelsTemp: data.Current.FeelsLike,
+		Pressure:  data.Current.Pressure,
+		Humidity:  data.Current.Humidity,
 		FeelsLike: h.getTempDescription(*data.Current.FeelsLike),
 	}
 }

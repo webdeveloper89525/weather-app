@@ -1,10 +1,11 @@
 package models
 
 type WeatherResponse struct {
-	Alerts    []*Alert `json:"alerts,omitempty"`
 	Summary   string   `json:"summary"`
 	Temp      *float64 `json:"temp"`
 	FeelsTemp *float64 `json:"feels_temp"`
+	Pressure  int      `json:"pressure"`
+	Humidity  int      `json:"humidity"`
 	FeelsLike string   `json:"feels_like"`
 }
 
