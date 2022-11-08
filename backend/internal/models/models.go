@@ -1,21 +1,25 @@
 package models
 
 type WeatherResponse struct {
-	Summary   string   `json:"summary"`
-	Temp      *float64 `json:"temp"`
-	FeelsTemp *float64 `json:"feels_temp"`
-	Pressure  int      `json:"pressure"`
-	Humidity  int      `json:"humidity"`
-	FeelsLike string   `json:"feels_like"`
+	Code      interface{} `json:"code"`
+	Name      string      `json:"name"`
+	Summary   string      `json:"summary"`
+	Temp      *float64    `json:"temp"`
+	FeelsTemp *float64    `json:"feels_temp"`
+	Pressure  int         `json:"pressure"`
+	Humidity  int         `json:"humidity"`
+	FeelsLike string      `json:"feels_like"`
 }
 
 type OpenWeatherOneCallResponse struct {
-	Code     int            `json:"cod"` // present on error
+	Code     interface{}    `json:"cod"` // present on error
+	Name     string         `json:"name"`
 	Lat      float64        `json:"lat"`
 	Lon      float64        `json:"lon"`
 	Timezone float64        `json:"timezone"`
+	Message  string         `json:"message"`
 	Current  CurrentWeather `json:"main"`
-	Weather  []*WeatherItem
+	Weather  []*WeatherItem `json:"weather"`
 }
 
 type CurrentWeather struct {
@@ -32,13 +36,4 @@ type WeatherItem struct {
 	Main        string `json:"main"`
 	Description string `json:"description"`
 	Icon        string `json:"icon"`
-}
-
-type Alert struct {
-	SenderName  string   `json:"sender_name"`
-	Event       string   `json:"event"`
-	Start       int64    `json:"start"`
-	End         int64    `json:"end"`
-	Description string   `json:"description"`
-	Tags        []string `json:"tags"`
 }

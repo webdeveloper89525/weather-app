@@ -3,9 +3,9 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"net/url"
+	"sync"
 
 	"go.uber.org/zap"
 
@@ -45,57 +45,92 @@ func (h *GetWeatherHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) 
 	return
 }
 
-func (h *GetWeatherHandler) getWeatherData(logger *zap.Logger, p url.Values) (resp models.WeatherResponse, err error) {
+func (h *GetWeatherHandler) getWeatherData(logger *zap.Logger, p url.Values) (resp []models.WeatherResponse, err error) {
 	logger.Info("Get weather data", zap.Any("params", p))
 
-	var (
-		lat, lon string
-	)
+	var cities []string
 
-	if lat = p.Get("lat"); lat == "" {
-		return resp, fmt.Errorf("lat query param is required")
+	if cities = p["cities"]; len(cities) == 0 {
+		return resp, fmt.Errorf("cities query param is required")
 	}
 
-	if lon = p.Get("lon"); lon == "" {
-		return resp, fmt.Errorf("lon query param is required")
+	resArr := []*models.OpenWeatherOneCallResponse{}
+	wg := sync.WaitGroup{}
+	for _, val := range cities {
+		wg.Add(1)
+		go func(val string) {
+			var openData models.OpenWeatherOneCallResponse
+
+			res, err := h.Client.GetClientWeather(val)
+			if err != nil {
+				openData = models.OpenWeatherOneCallResponse{
+					Code:    404,
+					Message: "Bad Request for the city " + val,
+					Name:    val,
+				}
+			} else {
+				decoder := json.NewDecoder(res.Body)
+				defer res.Body.Close()
+
+				err = decoder.Decode(&openData)
+				if err != nil {
+					fmt.Println(err)
+					openData = models.OpenWeatherOneCallResponse{
+						Code:    404,
+						Message: "Failed to parse Response for the city " + val,
+						Name:    val,
+					}
+				}
+
+				if openData.Name == "" {
+					openData.Name = val
+				}
+			}
+
+			resArr = append(resArr, &openData)
+
+			wg.Done()
+		}(val)
 	}
 
-	res, err := h.Client.GetClientWeather(lat, lon)
-	if err != nil {
-		return resp, fmt.Errorf("do request failed : %w", err)
-	}
+	wg.Wait()
 
-	body, err := io.ReadAll(res.Body)
-	defer res.Body.Close()
-
-	var openData models.OpenWeatherOneCallResponse
-
-	err = json.Unmarshal(body, &openData)
-	if err != nil {
-		logger.Error("Raw weather response", zap.Any("body", string(body)))
-		return resp, fmt.Errorf("failed to unmarshal open weather data: %w", err)
-	}
-
-	if openData.Code != 200 {
-		rawRes := string(body)
-		logger.Error("Bad response from open api", zap.Any("body", rawRes))
-		return resp, fmt.Errorf("request failed: %s", rawRes)
-	}
-
-	logger.Info("Weather data", zap.Any("raw", string(body)))
-
-	return h.getWeatherResponse(openData), nil
+	return h.getWeatherResponses(resArr), nil
 }
 
-func (h *GetWeatherHandler) getWeatherResponse(data models.OpenWeatherOneCallResponse) models.WeatherResponse {
-	return models.WeatherResponse{
-		Summary:   h.getSummaryDescription(*data.Weather[0]),
-		Temp:      data.Current.Temp,
-		FeelsTemp: data.Current.FeelsLike,
-		Pressure:  data.Current.Pressure,
-		Humidity:  data.Current.Humidity,
-		FeelsLike: h.getTempDescription(*data.Current.FeelsLike),
+func (h *GetWeatherHandler) getWeatherResponses(data []*models.OpenWeatherOneCallResponse) []models.WeatherResponse {
+	if len(data) == 0 {
+		return nil
 	}
+	weatherRes := []models.WeatherResponse{}
+	for _, val := range data {
+		if len(val.Weather) != 0 {
+			weatherRes = append(weatherRes, models.WeatherResponse{
+				Code:      val.Code,
+				Name:      val.Name,
+				Summary:   h.getSummaryDescription(*val.Weather[0]),
+				Temp:      val.Current.Temp,
+				FeelsTemp: val.Current.FeelsLike,
+				Pressure:  val.Current.Pressure,
+				Humidity:  val.Current.Humidity,
+				FeelsLike: h.getTempDescription(*val.Current.FeelsLike),
+			})
+		} else {
+			var codeRes int
+			if intCode, ok := val.Code.(int); !ok {
+				codeRes = 404
+			} else {
+				codeRes = intCode
+			}
+			weatherRes = append(weatherRes, models.WeatherResponse{
+				Code:    codeRes,
+				Name:    val.Name,
+				Summary: val.Message,
+			})
+		}
+	}
+
+	return weatherRes
 }
 
 func (h *GetWeatherHandler) getSummaryDescription(weather models.WeatherItem) string {

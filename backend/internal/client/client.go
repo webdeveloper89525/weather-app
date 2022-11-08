@@ -27,19 +27,15 @@ func ClientConfig(cfg *config.Config) *OpenWeatherClient {
 	}
 }
 
-func (c *OpenWeatherClient) GetClientWeather(lat, lon string) (*http.Response, error) {
+func (c *OpenWeatherClient) GetClientWeather(city string) (*http.Response, error) {
 	req, err := http.NewRequest(http.MethodGet, c.Config.Endpoint+"/weather", nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed build request: %w", err)
 	}
 
 	q := req.URL.Query()
-	q.Add("lat", lat)
-	q.Add("lon", lon)
-	q.Add("units", c.Config.Unit)
-	if c.Config.Exclude != "" {
-		q.Add("exclude", c.Config.Exclude)
-	}
+	countryCode := "au"
+	q.Add("q", city+","+countryCode)
 	q.Add("appid", c.Config.APIKey)
 
 	req.URL.RawQuery = q.Encode()
