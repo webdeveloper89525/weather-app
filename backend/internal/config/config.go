@@ -10,8 +10,6 @@ import (
 type Config struct {
 	APIKey   string
 	Endpoint string
-	Exclude  string
-	Unit     string
 }
 
 func ConfigEnv() (*Config, error) {
@@ -31,9 +29,6 @@ func ConfigEnv() (*Config, error) {
 	if cfg.Endpoint == "" {
 		return cfg, fmt.Errorf("ENDPOINT is missing.")
 	}
-
-	cfg.Exclude = "minutely,hourly,daily" // default
-	cfg.Unit = "imperial"                 // default
 
 	return cfg, nil
 }
