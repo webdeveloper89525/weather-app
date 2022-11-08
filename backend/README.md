@@ -1,45 +1,68 @@
-# Simple Weather API
+# Weather API for multiple cities
 
 ### Overview
 
-This simple-weather project is a http server that provides an API to get the current weather data from the [Open Weather Map API](https://openweathermap.org/api). Making a request with any valid latitude and longitude geo coordinates returns the current weather in that area in JSON format.
+This simple-weather project is a http server that provides an API to get the current weather data from the [Open Weather Map API](https://openweathermap.org/api) for Australia cities. Making a request with the name of cities in Australia returns the current weather in those area in JSON format.
 
 ### Pre-reqs
 1. Recent version of Go (Golang) installed. [Download](https://go.dev/doc/install)
-1. Need an API KEY [Sign-up](https://home.openweathermap.org/users/sign_up) and Subscribe for the Free [One-Call](https://openweathermap.org/api/one-call-3) service.
+1. Need an API KEY [Sign-up](https://home.openweathermap.org/users/sign_up) and Subscribe for the Free [One-Call](https://api.openweathermap.org/data/2.5) service.
 
-### Usage
-1. Start the Server with your API KEY
+### Runing the application
+1. Add the API KEY for openweathermap open api on .env file.
+
+2. Run the 
 ```sh
-API_KEY=XXXX make run
+go run main.go
 ```
-
-2. Find your lat, lon geo coordinates.
 
 
 Examples:
 
-Miami
+['Sydney',Melbourne','Adelaide','CovidFreeCity']
+
 ```sh
-make miami
-{
-  "alerts": [
+[
     {
-      "sender_name": "NWS Miami (Southern Florida)",
-      "event": "Coastal Flood Statement",
-      "start": 1664104440,
-      "end": 1664172000,
-      "description": "...COASTAL FLOOD STATEMENT IN EFFECT THROUGH LATE TONIGHT...\n* WHAT...Isolated minor coastal flooding.\n* WHERE...Coastal Broward and Coastal Miami-Dade Counties.\n* WHEN...Through late tonight.\n* IMPACTS...Some water on low lying roads and property during high\ntide.",
-      "tags": [
-        "Coastal event",
-        "Flood"
-      ]
+        "code": 200,
+        "name": "Sydney",
+        "summary": "Current weather: Clear (clear sky) in the area.",
+        "temp": 287.42,
+        "feels_temp": 287.15,
+        "pressure": 1021,
+        "humidity": 86,
+        "feels_like": "Blazing Hot"
+    },
+    {
+        "code": 200,
+        "name": "Adelaide",
+        "summary": "Current weather: Clear (clear sky) in the area.",
+        "temp": 297.47,
+        "feels_temp": 297,
+        "pressure": 1010,
+        "humidity": 40,
+        "feels_like": "Blazing Hot"
+    },
+    {
+        "code": 200,
+        "name": "Melbourne",
+        "summary": "Current weather: Clear (clear sky) in the area.",
+        "temp": 289.08,
+        "feels_temp": 288.87,
+        "pressure": 1017,
+        "humidity": 82,
+        "feels_like": "Blazing Hot"
+    },
+    {
+        "code": 404,
+        "name": "CovidFreeCity",
+        "summary": "city not found",
+        "temp": null,
+        "feels_temp": null,
+        "pressure": 0,
+        "humidity": 0,
+        "feels_like": ""
     }
-  ],
-  "summary": "Current weather: Clouds (broken clouds) and 1 alert(s) in the area.",
-  "temp": 90.25,
-  "feels_temp": 102.85,
-  "feels_like": "Blazing Hot"
-}
+]
 ```
 
