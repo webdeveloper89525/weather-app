@@ -19,6 +19,9 @@ type GetWeatherHandler struct {
 }
 
 func (h *GetWeatherHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+
+	(w).Header().Set("Access-Control-Allow-Origin", "*")
+
 	logger := h.Logger.Named("Get weather handler - serveHTTP")
 	logger.Info("Request received")
 

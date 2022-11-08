@@ -1,12 +1,12 @@
-import { PinballApi } from "./weather-api";
+import { WeatherApi } from "./weather-api";
 
 const Api = {
-    ...PinballApi,
+    ...WeatherApi,
 
     reducers: {
-        [PinballApi.reducerPath]: PinballApi.reducer,
+        [WeatherApi.reducerPath]: WeatherApi.reducer,
     },
-    middlewares: [PinballApi.middleware],
+    middlewares: [WeatherApi.middleware],
 };
 
 export default Api;

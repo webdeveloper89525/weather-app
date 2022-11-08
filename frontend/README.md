@@ -1,10 +1,10 @@
-# Pinball Locations Near ME
+# Weather API Application
 
 ## Requirement
 
--   Use the https://pinballmap.com/api/v1/docs API.
--   The user should be able to both enter their latitude and longitude and auto-fill their latitude and longitude fields by clicking a Near Me button.
--   When the user clicks the Search button, a list of closest pinball locations appear on the page.
+-   Use the http://localhost:8080/api/v1/docs API.
+-   The user should be able to input the cities in Australia
+-   When the user clicks Show Weather Button then user can see the data for the weather for those cities which he inputed.
 
 ## Installation
 
@@ -16,11 +16,3 @@
 ### `yarn start`
 
 ## Running application screen
-
-### When click "Near Me" button, you can see the below image.
-
-![plot](./nearme.png)
-
-### When click "Search" button, you can see the below image
-
-![plot](./search-list.png)
