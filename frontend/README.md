@@ -15,4 +15,14 @@
 
 ### `yarn start`
 
-## Running application screen
+### Build Docker command mannually
+
+```
+docker build --tag weather-frontend-react .
+```
+
+### Run Docker command mannually
+
+```
+docker run --publish 3000:3000 weather-frontend-react
+```

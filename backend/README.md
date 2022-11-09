@@ -68,8 +68,14 @@ Examples:
 ]
 ```
 
-### Build Docker command.
+### Build Docker command mannually
 
 ```
-docker build -t backend .
+docker build --tag weather-backend-go .
+```
+
+### Run Docker command mannually
+
+```
+docker run --publish 8080:8080 weather-backend-go
 ```
