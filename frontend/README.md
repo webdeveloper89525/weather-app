@@ -8,7 +8,7 @@
 
 ## Installation
 
--   Make sure node v16.14.2
+-   Make sure node v16+
 -   Run `yarn`
 
 ## Run app
