@@ -1,10 +1,11 @@
-import { Grid } from '@mui/material'
+import { Grid, Stack } from '@mui/material'
 import {
   Box,
   Button,
   Card,
   CardContent,
   CardHeader,
+  Chip,
   Container,
   TextField,
   Typography,
@@ -21,6 +22,28 @@ const Weather = () => {
     'CovidFreeCity',
   ])
   const [weathers, setWeathers] = useState([])
+  const [showCity, setShowCity] = useState(undefined)
+
+  const handleShowCity = (e) => {
+    setShowCity(e.target.value)
+  }
+
+  const handleAddCity = () => {
+    if (showCity) {
+      if (!cities.includes(showCity)) {
+        const _cities = [...cities]
+        _cities.push(showCity)
+        setCities([..._cities])
+        setShowCity(undefined)
+      }
+    }
+  }
+
+  const handleDeleteCity = (index) => {
+    const _cities = [...cities]
+    _cities.splice(index, 1)
+    setCities([..._cities])
+  }
 
   const handleShowWeather = () => {
     let params = ''
@@ -137,7 +160,7 @@ const Weather = () => {
       <Grid container sx={{ py: 5 }} direction="column">
         <Grid item xs={12}>
           <Grid container spacing={2}>
-            <Grid item md={8} xs={12}>
+            <Grid item md={6} xs={12}>
               <TextField
                 id="city"
                 label="City"
@@ -145,10 +168,23 @@ const Weather = () => {
                 name="lat"
                 style={{ width: '100%' }}
                 type="string"
-                onChange={() => {}}
+                value={showCity || ''}
+                onChange={(e) => handleShowCity(e)}
               />
             </Grid>
-            <Grid item md={4} xs={12}>
+            <Grid item md={3} xs={12}>
+              <Button
+                variant="contained"
+                color="secondary"
+                size="large"
+                fullWidth
+                onClick={() => handleAddCity()}
+                style={{ height: '100%' }}
+              >
+                Add City
+              </Button>
+            </Grid>
+            <Grid item md={3} xs={12}>
               <Button
                 variant="contained"
                 color="primary"
@@ -159,6 +195,26 @@ const Weather = () => {
               >
                 Show Weather
               </Button>
+            </Grid>
+          </Grid>
+        </Grid>
+        <Grid item xs={12}>
+          <Grid container>
+            <Grid item md={12} xs={12}>
+              <Stack direction="row" spacing={1}>
+                {cities?.length > 0 &&
+                  cities.map((city, index) => {
+                    return (
+                      <Chip
+                        key={'chip' + index}
+                        label={city}
+                        variant="outlined"
+                        color="primary"
+                        onDelete={() => handleDeleteCity(index)}
+                      />
+                    )
+                  })}
+              </Stack>
             </Grid>
           </Grid>
         </Grid>

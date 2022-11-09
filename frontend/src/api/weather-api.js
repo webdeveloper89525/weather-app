@@ -5,10 +5,6 @@ const tagTypes = {
   WeatherData: 'WeatherData',
 }
 
-console.log(
-  'process.env.REACT_APP_BASE_API_URL',
-  process.env.REACT_APP_BASE_API_URL,
-)
 export const WeatherApi = createApi({
   reducerPath: 'WeatherApi',
   baseQuery: fetchBaseQuery({
