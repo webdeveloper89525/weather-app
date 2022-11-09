@@ -21,5 +21,5 @@ func ServerConfig(api internal.WeatherService) *Server {
 }
 
 func (s *Server) Start() {
-	log.Fatal(http.ListenAndServe("localhost:8080", s))
+	log.Fatal(http.ListenAndServe("0.0.0.0:8080", s))
 }

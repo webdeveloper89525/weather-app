@@ -5,17 +5,19 @@
 This simple-weather project is a http server that provides an API to get the current weather data from the [Open Weather Map API](https://openweathermap.org/api) for Australia cities. Making a request with the name of cities in Australia returns the current weather in those area in JSON format.
 
 ### Pre-reqs
+
 1. Recent version of Go (Golang) installed. [Download](https://go.dev/doc/install)
 1. Need an API KEY [Sign-up](https://home.openweathermap.org/users/sign_up) and Subscribe for the Free [One-Call](https://api.openweathermap.org/data/2.5) service.
 
 ### Runing the application
+
 1. Add the API KEY for openweathermap open api on .env file.
 
-2. Run the 
+2. Run the
+
 ```sh
 go run main.go
 ```
-
 
 Examples:
 
@@ -66,3 +68,8 @@ Examples:
 ]
 ```
 
+### Build Docker command.
+
+```
+docker build -t backend .
+```

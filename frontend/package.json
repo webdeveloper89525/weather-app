@@ -1,5 +1,5 @@
 {
-  "name": "pinball-locations-near-me",
+  "name": "weatherapp-front",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
