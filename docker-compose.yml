@@ -1,0 +1,19 @@
+version: '2'
+services:
+    server:
+        build: ./backend
+        container_name: weather-backend
+        volumes:
+            - ./backend:/go/src/app
+        ports:
+            - "8080:8080"
+    client:
+        build: ./frontend
+        container_name: weather-frontend
+        volumes:
+            - ./frontend:/usr/src/app
+            # mount node_modules as a workaround for it disappearing
+            # after adding /client as a mounted folder
+            - /usr/src/app/node_modules
+        ports:
+            - "3000:3000"
