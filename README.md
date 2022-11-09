@@ -18,7 +18,7 @@ docker-compose up
 
 4. For availabile running backend and frontend is containerized and the app running is run by the command `docker-compose up`
 
-### Backend
+## Backend
 
 1. In the Backend golang v1.19.0 is used.
 2. In the Backend for using the openweathermap.org api first sign up to the https://openweathermap.org/ website and get the API KEY for using the Open API.
@@ -42,7 +42,7 @@ docker-compose up
 4. Treating the mutiple array from frontend side
 5. Treating the error exception in the response of the weather open api.
 
-### Frontend
+## Frontend
 
 1. Used the general react app.
 2. Used the redux-store for managing the store variable
@@ -71,3 +71,55 @@ docker-compose up
     ├── package.json
     ├── README.md
     ├── Dockerfile
+
+## Result
+
+![plot](./result.png)
+
+## Monitoring / Observability
+
+> I have tried to use `prometheus/grafana` with docker. But in `docker-compose.yml` run pulling the prometheus and grafana is still failing. So I didn't succed to add them to the docker containerization.
+
+So I would like to share my `docker-compose.yml` file which I tried to add `prometheus/grafana` in.
+
+```
+version: '3.9'
+services:
+    prometheus:
+        image: prom/prometheus:latest
+        container_name: prometheus
+        ports:
+            - 9090:9090
+        volumes:
+            - ./prometheus:/etc/prometheus
+            - prometheus-data:/prometheus
+        command: --web.enable-lifecycle  --config.file=/etc/prometheus/prometheus.yml
+
+    grafana:
+        image: grafana/grafana:latest
+        ports:
+            - '3000:3000'
+
+    server:
+        build: ./
+        container_name: test-prometheus
+        volumes:
+            - .:/go/src/app
+        ports:
+            - "8080:8080"
+
+volumes:
+    prometheus-data:
+    grafana-data:
+
+networks:
+    prometheus-network:
+        driver: bridge
+        name: prometheus-network
+```
+
+### The alternative for using observability and Monitoring
+
+> Elastic APM.
+
+Working with this the configuration of `docker-compose.yml` file for kibana, elasticsearch and apm-server is not configured correctly. So I think this method should be considered in the future again if we are going to use this method.
